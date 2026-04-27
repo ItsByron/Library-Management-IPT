@@ -162,8 +162,8 @@ async function loadBooks() {
         ? `<button class="btn btn-borrow disabled" disabled>Unavailable</button>`
         : `<button class="btn btn-borrow" onclick="openBorrowModal(${book.Book_ID})">Borrow</button>`;
 
-      return `
-        <div class="col-md-3 mb-3">
+        return `
+          <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
           <div class="book-card small-card">
 
             <div class="book-body">
@@ -172,10 +172,8 @@ async function loadBooks() {
                 ${book.Book_Title}
               </div>
 
-              <div class="book-title">
-                ${book.Book_Title}
-                ${book.Isbn ? `<span class="book-isbn">(${book.Isbn})</span>` : ''}
-              </div>
+          <div class="book-title">${book.Book_Title}</div>
+          ${book.Isbn ? `<div class="book-isbn">ISBN: ${book.Isbn}</div>` : ''}
 
               <div class="book-author">${book.Author_Name}</div>
 
@@ -191,12 +189,12 @@ async function loadBooks() {
                 ${badge}
               </div>
 
-              <div class="book-actions">
-                ${borrowBtn}
-                <button class="btn btn-edit" onclick="openEditModal(${book.Book_ID})">Edit</button>
-                <button class="btn btn-del" onclick="deleteBook(${book.Book_ID})">Del</button>
-                <button class="btn btn-add-copy" onclick="openAddCopiesModal(${book.Book_ID})">Add Copy</button>
-              </div>
+            <div class="book-actions flex-wrap">
+              ${borrowBtn}
+              <button class="btn btn-edit" onclick="openEditModal(${book.Book_ID})">Edit</button>
+              <button class="btn btn-del" onclick="deleteBook(${book.Book_ID})">Del</button>
+              <button class="btn btn-add-copy" onclick="openAddCopiesModal(${book.Book_ID})">Add Copy</button>
+            </div>
 
             </div>
           </div>

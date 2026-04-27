@@ -578,3 +578,84 @@
 #memberBooksTable th {
   white-space: nowrap;
 }
+
+/* ── Responsive header nav ── */
+@media (max-width: 768px) {
+  .site-header .d-flex.align-items-center {
+    flex-wrap: wrap;
+    padding: .6rem 1rem !important;
+  }
+  .site-nav {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: .25rem !important;
+    padding-bottom: .4rem;
+  }
+  .site-nav .btn-nav {
+    padding: .4rem .6rem !important;
+    font-size: .72rem !important;
+  }
+  .btn-logout {
+    margin-left: 0 !important;
+  }
+  main {
+    padding: 1rem !important;
+  }
+}
+
+/* ── Book grid responsive columns ── */
+#bookGrid {
+  width: 100%;
+}
+#bookGrid > * {          /* each col-* wrapper JS injects */
+  flex: 0 0 auto;
+}
+@media (max-width: 575px)  { #bookGrid > * { width: 100%; } }
+@media (min-width: 576px)  { #bookGrid > * { width: 50%; } }
+@media (min-width: 768px)  { #bookGrid > * { width: 33.333%; } }
+@media (min-width: 992px)  { #bookGrid > * { width: 25%; } }
+@media (min-width: 1200px) { #bookGrid > * { width: 20%; } }
+
+
+
+.book-card {
+  min-width: 0;
+  width: 100%;
+}
+
+.small-cover {
+  aspect-ratio: 2/3;
+  font-size: .75rem;
+}
+
+.book-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin-top: auto;
+}
+
+.book-actions .btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: .7rem;
+  padding: .28rem .4rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#bookGrid {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.book-isbn {
+  font-size: .72rem;
+  color: var(--muted);
+  letter-spacing: .04em;
+  margin-bottom: .3rem;
+  font-family: 'Crimson Pro', serif;
+}

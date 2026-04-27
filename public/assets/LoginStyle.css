@@ -104,14 +104,6 @@ body {
   background: #F0D98B;
 }
 
-.hint {
-  text-align: center;
-  color: #4a6080;
-  font-size: .82rem;
-  margin-top: 1.5rem;
-  font-style: italic;
-}
-
  /* .toast {
   opacity: 0;
   transform: translateY(20px);

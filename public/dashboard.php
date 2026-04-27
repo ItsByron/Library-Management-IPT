@@ -48,14 +48,20 @@ require_once '../database/db.php';
     <div id="section-catalog" class="section active">
       <div class="section-header"><h2>Book Catalog</h2></div>
       <div class="mb-3">
-<div class="d-flex gap-3 flex-wrap align-items-center mb-3">
-  <div class="search-box flex-fill" style="min-width:200px">
-    <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input type="text" id="searchInput" placeholder="Title, author, ISBN, genre…" oninput="debounceSearch('catalog')"/>
-  </div>
-  <div class="mb-2 text-muted" id="bookCount"></div>
-</div>
-<div class="row g-3" id="bookGrid"></div>   <!-- ← now outside, full width -->
+        <div class="d-flex gap-3 flex-wrap align-items-center">
+          <div class="search-box flex-fill" style="min-width:200px">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInput" placeholder="Title, author, ISBN, genre…" oninput="debounceSearch('catalog')"/>
+          </div>
+          <div class="mb-2 text-muted" id="bookCount"></div>
+          <!-- <select class="filter-select" id="availFilter"> -->
+            <!-- renderCatalog -->
+             <!-- onchange="loadBooks()" -->
+            <!-- <option value="">All</option>
+            <option value="available">Available</option>
+            <option value="borrowed">Borrowed</option>
+          </select> -->
+          <div class="row g-3" id="bookGrid"></div>
         </div>
       </div>
       <!-- <div class="book-grid" id="bookGrid"></div> -->
@@ -219,7 +225,7 @@ require_once '../database/db.php';
       </div>
     </div>
 
- 
+
     <div id="section-fines" class="section">
       <div class="section-header"><h2>Fines</h2></div>
       <div class="info-banner">
@@ -265,6 +271,7 @@ require_once '../database/db.php';
 
 
 
+
 <div class="overlay" id="borrowModal">
   <div class="modal-box">
     <h3>Borrow Book</h3>
@@ -295,7 +302,7 @@ require_once '../database/db.php';
   </div>
 </div>
 
-
+<!-- Notification -->
 <div class="overlay" id="notifModal">
   <div class="modal-box">
     <h3 id="notifTitle" style="color:#8b3a1c">⚠️ Warning</h3>
@@ -396,7 +403,7 @@ require_once '../database/db.php';
   </div>
 </div>
 
-
+<!-- Delete Member -->
 <!-- <div class="overlay" id="deleteMemberModal">
   <div class="modal-box">
     <h3>Remove Member</h3>

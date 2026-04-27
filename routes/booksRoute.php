@@ -118,7 +118,7 @@ case 'returnBook':
 
     try {
 
-        // 🔥 1. Get Borrow Info
+
         $stmt = $pdo->prepare("
             SELECT 
                 bd.BookCopy_ID,
@@ -141,7 +141,7 @@ case 'returnBook':
         $copyId = $row['BookCopy_ID'];
         $dueDate = $row['Due_Date'];
 
-        // 🔥 2. Mark returned
+
         $stmt = $pdo->prepare("
             UPDATE borrowdetails
             SET 
@@ -151,7 +151,6 @@ case 'returnBook':
         ");
         $stmt->execute([$borrowDetailsId]);
 
-        // 🔥 3. Make book available again
         $stmt = $pdo->prepare("
             UPDATE bookcopy
             SET Book_Status_ID = 1
@@ -159,7 +158,7 @@ case 'returnBook':
         ");
         $stmt->execute([$copyId]);
 
-        // // 🔥 4. Check overdue → compute fine
+
         // $today = date('Y-m-d');
         // $fineAmount = 0;
 
@@ -167,7 +166,7 @@ case 'returnBook':
         //     $days = (strtotime($today) - strtotime($dueDate)) / (60 * 60 * 24);
         //     $fineAmount = $days * 5;
 
-        //     // 🔥 insert fine
+
         //     $stmt = $pdo->prepare("
         //         INSERT INTO fines 
         //         (BorrowDetails_ID, Fine_Amount, Fine_Status_ID, Issued_Date, Paid_Date)
@@ -216,7 +215,7 @@ break;
 
     try {
 
-        // ✅ 1. Check available copy
+
         $stmt = $pdo->prepare("
             SELECT bc.BookCopy_ID 
             FROM bookcopy bc
@@ -234,7 +233,7 @@ break;
             exit;
         }
 
-        // ✅ CHECK IF MEMBER IS ACTIVE
+
         $stmt = $pdo->prepare("
             SELECT Member_Status_ID 
             FROM members 
@@ -261,7 +260,7 @@ break;
 
         $copyId = $copy['BookCopy_ID'];
 
-        // ✅ 2. Insert borrow record
+
         $stmt = $pdo->prepare("
             INSERT INTO borrowrecord (Member_ID, Borrow_Date, Due_Date)
             VALUES (?, ?, ?)
@@ -270,14 +269,14 @@ break;
 
         $borrowId = $pdo->lastInsertId();
 
-        // ✅ 3. Insert borrow details
+   
         $stmt = $pdo->prepare("
             INSERT INTO borrowdetails (Borrow_ID, BookCopy_ID, Return_Date, Borrow_Status_ID)
             VALUES (?, ?, NULL, 1)
         ");
         $stmt->execute([$borrowId, $copyId]);
 
-        // ✅ 4. Mark copy as borrowed
+   
         $stmt = $pdo->prepare("
             UPDATE bookcopy 
             SET Book_Status_ID = 2 
@@ -307,7 +306,7 @@ break;
     $year    = $data['Year'] ?? null;
     $copies  = $data['CopyCount'] ?? 0;
 
-    // ✅ VALIDATION
+
     if (!$title || !$author || !$isbn || !$genre || !$copies) {
         echo json_encode([
             "status" => "error",
@@ -318,7 +317,7 @@ break;
 
     try {
 
-        // ✅ 1. CHECK ISBN UNIQUE
+
         $stmt = $pdo->prepare("SELECT Book_ID FROM books WHERE ISBN = ?");
         $stmt->execute([$isbn]);
 
@@ -330,9 +329,6 @@ break;
             exit;
         }
 
-        // ============================
-        // ✅ 2. HANDLE AUTHOR
-        // ============================
         $stmt = $pdo->prepare("SELECT Author_ID FROM author WHERE Author_Name = ?");
         $stmt->execute([$author]);
         $authorId = $stmt->fetchColumn();
@@ -343,9 +339,7 @@ break;
             $authorId = $pdo->lastInsertId();
         }
 
-        // ============================
-        // ✅ 3. HANDLE CATEGORY
-        // ============================
+
         $stmt = $pdo->prepare("SELECT Category_ID FROM category WHERE Category_Name = ?");
         $stmt->execute([$genre]);
         $categoryId = $stmt->fetchColumn();
@@ -356,9 +350,7 @@ break;
             $categoryId = $pdo->lastInsertId();
         }
 
-        // ============================
-        // ✅ 4. INSERT BOOK
-        // ============================
+
         $stmt = $pdo->prepare("
             INSERT INTO books (Book_Title, Author_ID, Category_ID, Publication_Year, ISBN)
             VALUES (?, ?, ?, ?, ?)
@@ -367,9 +359,7 @@ break;
 
         $bookId = $pdo->lastInsertId();
 
-        // ============================
-        // ✅ 5. INSERT COPIES
-        // ============================
+
         $stmt = $pdo->prepare("
             INSERT INTO bookcopy (Book_ID, Book_Status_ID)
             VALUES (?, 1)
@@ -412,7 +402,6 @@ break;
 
         try {
 
-            // ✅ 1. GET OR CREATE AUTHOR
             $stmt = $pdo->prepare("SELECT Author_ID FROM Author WHERE Author_Name = ?");
             $stmt->execute([$author]);
             $authorRow = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -425,7 +414,7 @@ break;
                 $authorId = $pdo->lastInsertId();
             }
 
-            // ✅ 2. GET OR CREATE CATEGORY
+
             $stmt = $pdo->prepare("SELECT Category_ID FROM Category WHERE Category_Name = ?");
             $stmt->execute([$genre]);
             $catRow = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -455,7 +444,7 @@ break;
                 }
             }
 
-            // ✅ 3. UPDATE BOOK
+
             $stmt = $pdo->prepare("
                 UPDATE books
                 SET 
@@ -537,9 +526,7 @@ case 'deleteCopy':
 
     try {
 
-        // ===============================
-        // 🔥 1. CHECK IF COPY EXISTS
-        // ===============================
+
         $stmt = $pdo->prepare("
             SELECT Book_ID, Book_Status_ID 
             FROM bookcopy 
@@ -558,9 +545,7 @@ case 'deleteCopy':
 
         $bookId = $copy['Book_ID'];
 
-        // ===============================
-        // 🔥 2. BLOCK IF STILL BORROWED
-        // ===============================
+
         $stmt = $pdo->prepare("
             SELECT COUNT(*) 
             FROM borrowdetails 
@@ -578,9 +563,7 @@ case 'deleteCopy':
             exit;
         }
 
-        // ===============================
-        // 🔥 3. DELETE RETURNED HISTORY
-        // ===============================
+
         $stmt = $pdo->prepare("
             DELETE FROM borrowdetails
             WHERE BookCopy_ID = ?
@@ -588,18 +571,13 @@ case 'deleteCopy':
         ");
         $stmt->execute([$copyId]);
 
-        // ===============================
-        // 🔥 4. DELETE COPY
-        // ===============================
+
         $stmt = $pdo->prepare("
             DELETE FROM bookcopy 
             WHERE BookCopy_ID = ?
         ");
         $stmt->execute([$copyId]);
 
-        // ===============================
-        // 🔥 5. CHECK IF BOOK HAS COPIES LEFT
-        // ===============================
         $stmt = $pdo->prepare("
             SELECT COUNT(*) 
             FROM bookcopy 
@@ -609,7 +587,7 @@ case 'deleteCopy':
         $count = $stmt->fetchColumn();
 
         if ($count == 0) {
-            // 🔥 DELETE BOOK IF NO COPIES LEFT
+
             $stmt = $pdo->prepare("
                 DELETE FROM books 
                 WHERE Book_ID = ?
@@ -739,7 +717,7 @@ case 'deleteHistory':
 
     try {
 
-        // 🔥 1. Get Borrow_ID
+
         $stmt = $pdo->prepare("
             SELECT Borrow_ID
             FROM borrowdetails
@@ -758,7 +736,7 @@ case 'deleteHistory':
 
         $borrowId = $row['Borrow_ID'];
 
-        // 🔥 2. Check fine
+ 
         $stmt = $pdo->prepare("
             SELECT Fines_ID, Fine_Status_ID
             FROM fines
@@ -769,7 +747,7 @@ case 'deleteHistory':
 
         if ($fine) {
 
-            // ❌ if unpaid → block
+
             if ((int)$fine['Fine_Status_ID'] !== 2) {
                 echo json_encode([
                     "status" => "error",
@@ -778,7 +756,7 @@ case 'deleteHistory':
                 exit;
             }
 
-            // ✅ delete fine (if paid)
+
             $stmt = $pdo->prepare("
                 DELETE FROM fines
                 WHERE BorrowDetails_ID = ?
@@ -786,14 +764,14 @@ case 'deleteHistory':
             $stmt->execute([$borrowDetailsId]);
         }
 
-        // 🔥 3. Delete borrowdetails
+
         $stmt = $pdo->prepare("
             DELETE FROM borrowdetails
             WHERE BorrowDetails_ID = ?
         ");
         $stmt->execute([$borrowDetailsId]);
 
-        // 🔥 4. Check if borrowrecord still has children
+
         $stmt = $pdo->prepare("
             SELECT COUNT(*) as total
             FROM borrowdetails
@@ -802,7 +780,7 @@ case 'deleteHistory':
         $stmt->execute([$borrowId]);
         $count = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // 🔥 5. If no more → delete borrowrecord
+
         if ($count['total'] == 0) {
             $stmt = $pdo->prepare("
                 DELETE FROM borrowrecord
